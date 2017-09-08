@@ -19,7 +19,10 @@ public class TransformationCompany {
 		game.startGame(); // Run the whole program
 	}
 	
-	/* Verify functionality of the transformer sorting algorithm */
+	/* 
+	 * (DEPRECATED)
+	 * Verify functionality of the transformer sorting algorithm
+	 * */
 	public static void quickSortTest(){
 		Transformer soundwave = new Transformer("Soundwave", 'D', new int[] {8,9,2,6,7,5,6,10});
 		Transformer bluestreak = new Transformer("Bluestreak", 'A', new int[] {6,6,7,9,5,2,9,7});

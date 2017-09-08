@@ -250,7 +250,7 @@ public class Game {
 	}
 	
 	/*
-	 * "When unstoppable forces meet an immovable objects"
+	 * "When unstoppable forces meet immovable objects"
 	 * */
 	public void rageQuit(){
 		winningTeam = null;
@@ -270,7 +270,10 @@ public class Game {
 		else if (winningTeam == "Decepticons")
 			losingTeam = "Autobots";
 		
-		System.out.println(this.battleCount + " battles");
+		if (this.battleCount == 1)
+			System.out.println(this.battleCount + " battle");
+		else
+			System.out.println(this.battleCount + " battles");
 		System.out.println("Winning team (" + this.winningTeam + "): " + this.winners);
 		System.out.println("Survivors from the losing team (" + this.losingTeam + "): " + this.survivors);
 	}

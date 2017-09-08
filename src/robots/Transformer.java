@@ -1,7 +1,7 @@
 package robots;
 
-public class Transformer /*implements Comparator<Transformer>*/{
-	
+public class Transformer {
+	// Enum for array indices
 	public static int strength = 0,
 					intelligence = 1,
 					speed = 2,
@@ -13,10 +13,12 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	public int[] stats;
 	private int overall;
 	private char type;
-	private String name/*, team*/;
+	private String name;
 	boolean fought;
 	
-	/* Create a transformer */
+	/* 
+	 * Create a transformer
+	 * */
 	public Transformer(String name, char type, int[] stats){
 		this.name = name;
 		this.type = type;
@@ -41,21 +43,26 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	public String getName(){
 		return this.name;
 	}
-//	public String getTeam(){
-//		return this.team;
-//	}
+	
 	public char getType(){
 		return this.type;
 	}
+	
 	public int getOverall(){
 		return this.overall;
 	}
+	
 	public int getRank(){
 		return this.stats[rank];
 	}
+	
 	public int[] getStats(){
 		return this.stats;
 	}
+	
+	/* 
+	 * Get a stat of your choice
+	 * */
 	public int getStat(int index){
 		// Due diligence, error checking out of bounds
 		if (index < 0 || index > 7) {
@@ -69,22 +76,9 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	}
 	public void copy(Transformer toBeCopied){
 		this.name = toBeCopied.getName();
-//		this.team = toBeCopied.getTeam();
 		this.type = toBeCopied.getType();
 		this.stats = toBeCopied.getStats();
 		this.overall = toBeCopied.getOverall();
 	}
 	
-//	/* 
-//	 * For transformer ranks
-//	 **/
-//	@Override
-//	public int compare(Transformer t1, Transformer t2) {
-//		if (t1.getStat(rank) > t2.getStat(rank))
-//			return 1;
-//		else if (t1.getStat(rank) < t2.getStat(rank))
-//			return -1;
-//		else
-//			return 0;
-//	}
 }

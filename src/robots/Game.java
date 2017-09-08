@@ -6,13 +6,16 @@ import robots.Transformer;
 
 public class Game {
 	
-	public Transformer[] roster;
-	public ArrayList<Transformer> unsortedRoster;
+	public Transformer[] roster; // The final sorted roster
+	public ArrayList<Transformer> unsortedRoster; // The initial variable-size list
 	
 	int battleCount;
 	String winningTeam, losingTeam;
 	ArrayList<String> winners, survivors;
 	
+	/* 
+	 * init the game
+	 * */
 	public Game(){
 		roster = new Transformer[4];
 		battleCount = 0;
@@ -20,26 +23,35 @@ public class Game {
 		winners = new ArrayList<String>();
 		survivors = new ArrayList<String>();
 	}
-		
+	
+	/* 
+	 * Insert into unsorted variable-size roster
+	 * */
 	public void addTransformer(Transformer trans){
 		unsortedRoster.add(trans);
 	}
 	
-	// It's easier and more efficient to sort a regular array
+	/* 
+	 * It's easier and more efficient to sort a regular array
+	 * */
 	public void sortCompetitorsByRank(){
 		roster = unsortedRoster.toArray(new Transformer[unsortedRoster.size()]);
 		this.sortCompetitorsByRank(0, unsortedRoster.size()-1);
 	}
 	
-	//Algo: "quick sort" Order(n*logn)
+	/* 
+	 * It's easier and more efficient to sort a regular array.
+	 * Algorithm: "quick sort" Order(n*logn)
+	 * */
 	public void sortCompetitorsByRank(int start, int end){
-		if (start >= end) return; //base case, don't waste any CPU/memory
+		if (start >= end) return; // Base case, don't waste any CPU/memory
 		
 		int pivot = roster[end].getRank();
 		int left = start;
 		int right = start;
 		Transformer temp;
 		
+		// List of size 2
 		if (end - start == 1){
 			if (roster[start].getRank() > roster[end].getRank()){
 				temp = roster[left].clone();
@@ -49,6 +61,7 @@ public class Game {
 			return;
 		}
 		
+		// Normal quicksort case
 		for (;right <  end; right++){
 			if (roster[right].getRank() < pivot){
 				temp = roster[left].clone();
@@ -57,10 +70,12 @@ public class Game {
 				left++;
 			}
 		}
+		// Swap the pivot
 		temp = roster[left].clone();
 		roster[left].copy(roster[right]);
 		roster[right].copy(temp);
 		
+		//Partition list, recursively sort
 		sortCompetitorsByRank(start, (end-1)/2);
 		if (end % 2 == 0)
 			sortCompetitorsByRank(end/2, end);
@@ -68,6 +83,9 @@ public class Game {
 			sortCompetitorsByRank(end/2 + 1, end);
 	}
 	
+	/* 
+	 * for test "API"
+	 * */
 	public void printSortedRoster(){
 		for (Transformer transformer: roster)
 			System.out.println(transformer.getName() + ": rank " + transformer.getRank());
@@ -75,10 +93,12 @@ public class Game {
 	
 	// Get it going
 	public void startGame(){
+		// Empty roster
 		if (unsortedRoster.isEmpty()){
 			System.out.println("Nobody showed up, please let them know for next time.");
 			endGame();
 		}
+		// Winner by default
 		else if (unsortedRoster.size() == 1){
 			System.out.println("Only 1 transformer showed up, he wins by default!");
 			winners.add(unsortedRoster.get(0).getName());
@@ -90,14 +110,20 @@ public class Game {
 			endGame();
 		}
 		
+		// Prepare for battle
 		this.sortCompetitorsByRank();
 		int A=0, D=0;
 		int i=0, j=1;
 		
+		// i = opponent1, j = opponent2, double-walk through list
+		// Prevent double-fighting or friendly-fire
+		// Incrementally create variables to save stack/CPU when not needed
 		while (j < roster.length){
 			String name1 = roster[i].getName();
 			String name2 = roster[j].getName();
 			
+			// Main characters always win
+			// Main characters always win against themselves
 			if (name1 == "Optimus Prime"){
 				if (name2 == name1 || name2 == "Predaking"){
 					battleCount++;
@@ -125,6 +151,7 @@ public class Game {
 				}
 			}
 			
+			// Due diligence
 			int type1 = roster[i].getType();
 			int type2 = roster[j].getType();
 			boolean fought1 = roster[i].fought;
@@ -139,7 +166,7 @@ public class Game {
 				continue;
 			}
 			
-			
+			// Normal battle
 			int str1 = roster[i].getStat(Transformer.strength);
 			int crg1 = roster[i].getStat(Transformer.courage);
 			int skl1 = roster[i].getStat(Transformer.skill);
@@ -150,6 +177,7 @@ public class Game {
 			int skl2 = roster[j].getStat(Transformer.skill);
 			int ovra2 = roster[j].getOverall();
 			
+			// 1. Strength & Courage difference?
 			if ((str1 >= str2 - 3) && (crg1 >= crg2 - 4)){
 				winners.add(roster[i].getName());
 				if (type1 == 'A') A++; else D++;
@@ -158,14 +186,16 @@ public class Game {
 				winners.add(roster[j].getName());
 				if (type2 == 'A') A++; else D++;
 			}
-			else if (skl1 >= skl2){
+			// 2. Skill difference?
+			else if (skl1 > skl2){
 				winners.add(roster[i].getName());
 				if (type1 == 'A') A++; else D++;
 			}
-			else if (skl1 <= skl2){
+			else if (skl1 < skl2){
 				winners.add(roster[j].getName());
 				if (type2 == 'A') A++; else D++;
 			}
+			// 3. Overall rank difference?
 			else if (ovra1 > ovra2){
 				winners.add(roster[i].getName());
 				if (type1 == 'A') A++; else D++;
@@ -174,99 +204,26 @@ public class Game {
 				winners.add(roster[j].getName());
 				if (type2 == 'A') A++; else D++;
 			}
-			
 			// else if (ovra1 == ovra2) add nothing;
 			
+			// Complete
 			battleCount++;
 			roster[i].fought = true;
 			roster[j].fought = true;
 			
+			// Double-jump to next duo if adjacent (prevent overlap)
 			if (j-i == 1){
 				i+=2;
 				j+=2;
 			}
+			// Single-step pair if far (no overlap)
 			else {
 				i++;
 				j++;
 			}
 		}
 		
-//		for (int i=1; i < roster.length; i+=2){
-//			String name1 = roster[i-1].getName();
-//			String name2 = roster[i].getName();
-			
-//			if (name1 == "Optimus Prime"){
-//				if (name2 == name1 || name2 == "Predaking"){
-//					battleCount++;
-//					rageQuit();
-//				}
-//				else {
-//					winners.add("Optimus Prime");
-//					battleCount++;
-//					A++;
-//				}
-//			}
-//			else if (name1 == "Predaking"){
-//				if (name2 == name1 || name2 == "Optimus Prime"){
-//					battleCount++;
-//					rageQuit();
-//				}
-//				else {
-//					winners.add("Predaking");
-//					battleCount++;
-//					D++;
-//				}
-//			}
-			
-//			int str1 = roster[i-1].getStat(Transformer.strength);
-//			int crg1 = roster[i-1].getStat(Transformer.courage);
-//			int skl1 = roster[i-1].getStat(Transformer.skill);
-//			int ovra1 = roster[i-1].getOverall();
-//			int type1 = roster[i-1].getType();
-//			
-//			int str2 = roster[i].getStat(Transformer.strength);
-//			int crg2 = roster[i].getStat(Transformer.courage);
-//			int skl2 = roster[i].getStat(Transformer.skill);
-//			int ovra2 = roster[i].getOverall();
-//			int type2 = roster[i].getType();
-//			
-//			if ((str1 >= str2 - 3) && (crg1 >= crg2 - 4)){
-//				winners.add(roster[i-1].getName());
-//				if (type1 == 'A') A++; else D++;
-//			}
-//			else if ((str1 <= str2 - 3) && (crg1 <= crg2 - 4)){
-//				winners.add(roster[i].getName());
-//				if (type2 == 'A') A++; else D++;
-//			}
-//			else if (skl1 >= skl2){
-//				winners.add(roster[i-1].getName());
-//				if (type1 == 'A') A++; else D++;
-//			}
-//			else if (skl1 <= skl2){
-//				winners.add(roster[i].getName());
-//				if (type2 == 'A') A++; else D++;
-//			}
-//			else if (ovra1 > ovra2){
-//				winners.add(roster[i-1].getName());
-//				if (type1 == 'A') A++; else D++;
-//			}
-//			else if (ovra1 < ovra2){
-//				winners.add(roster[i].getName());
-//				if (type2 == 'A') A++; else D++;
-//			}
-				
-//			// else if (ovra1 == ovra2) add nothing;
-//			
-//			battleCount++;
-//		}
-				
-//		for (int j = 0; j < (roster.length/2)*2; j++){
-//			if (roster[j].getType() == 'A')
-//				A++;
-//			else
-//				D++;
-//		}
-
+		// Who had more victories?
 		if (A > D){
 			winningTeam = "Autobots";
 			losingTeam = "Decepticons";
@@ -289,16 +246,12 @@ public class Game {
 			}
 			i++;
 		}
-		// Add the remaining loser to the survivors list
-//		if (roster.length % 2 == 1){
-//			if (roster[roster.length - 1].getType() == 'A' && winningTeam == "Decepticons" ||
-//				roster[roster.length - 1].getType() == 'D' && winningTeam == "Autobots")
-//				survivors.add(roster[roster.length - 1].getName());
-//		}
-//		
 		endGame();
 	}
 	
+	/*
+	 * "When unstoppable forces meet an immovable objects"
+	 * */
 	public void rageQuit(){
 		winningTeam = null;
 		losingTeam = null;
@@ -308,6 +261,9 @@ public class Game {
 		endGame();
 	}
 	
+	/*
+	 * clean up (let JVM garbage-collector do the rest automatically)
+	 */
 	public void endGame(){
 		if (winningTeam == "Autobots")
 			losingTeam = "Decepticons";

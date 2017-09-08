@@ -22,6 +22,7 @@ public class TransformationCompany {
 //		game.addTransformer(abominus);
 		
 		game.startGame();
+		game.printSortedRoster();
 	}
 	
 //	public static void transformerSortTest(){

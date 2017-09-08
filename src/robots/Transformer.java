@@ -14,6 +14,7 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	private int overall;
 	private char type;
 	private String name/*, team*/;
+	boolean fought;
 	
 	/* Create a transformer */
 	public Transformer(String name, char type, int[] stats){
@@ -34,6 +35,7 @@ public class Transformer /*implements Comparator<Transformer>*/{
 						stats[speed] +
 						stats[endurance] +
 						stats[firepower];
+		this.fought = false;
 	}
 	
 	public String getName(){

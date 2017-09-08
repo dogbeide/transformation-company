@@ -1,7 +1,5 @@
 package robots;
 
-import java.util.Comparator;
-
 public class Transformer /*implements Comparator<Transformer>*/{
 	
 	public static int strength = 0,
@@ -15,7 +13,7 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	public int[] stats;
 	private int overall;
 	private char type;
-	private String name, team;
+	private String name/*, team*/;
 	
 	/* Create a transformer */
 	public Transformer(String name, char type, int[] stats){
@@ -41,9 +39,9 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	public String getName(){
 		return this.name;
 	}
-	public String getTeam(){
-		return this.team;
-	}
+//	public String getTeam(){
+//		return this.team;
+//	}
 	public char getType(){
 		return this.type;
 	}
@@ -69,7 +67,7 @@ public class Transformer /*implements Comparator<Transformer>*/{
 	}
 	public void copy(Transformer toBeCopied){
 		this.name = toBeCopied.getName();
-		this.team = toBeCopied.getTeam();
+//		this.team = toBeCopied.getTeam();
 		this.type = toBeCopied.getType();
 		this.stats = toBeCopied.getStats();
 		this.overall = toBeCopied.getOverall();

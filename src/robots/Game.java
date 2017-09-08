@@ -73,34 +73,120 @@ public class Game {
 			System.out.println(transformer.getName() + ": rank " + transformer.getRank());
 	}
 	
-	public void startTest(){
-		
-	}
-	
 	// Get it going
 	public void startGame(){
 		if (unsortedRoster.isEmpty()){
 			System.out.println("Nobody showed up, please let them know for next time.");
-			return;
+			endGame();
 		}
 		else if (unsortedRoster.size() == 1){
 			System.out.println("Only 1 transformer showed up, he wins by default!");
 			winners.add(unsortedRoster.get(0).getName());
-			winningTeam = unsortedRoster.get(0).getTeam();
-			return;
+			
+			if (unsortedRoster.get(0).getType() == 'A')
+				winningTeam = "Autobots";
+			else
+				winningTeam = "Decepticons";
+			endGame();
 		}
 		
 		this.sortCompetitorsByRank();
+		int A=0, D=0;
 		
 		for (int i=1; i < roster.length; i+=2){
+			String name1 = roster[i-1].getName();
+			String name2 = roster[i].getName();
 			
+			if (name1 == "Optimus Prime"){
+				if (name2 == name1 || name2 == "Predaking"){
+					battleCount++;
+					rageQuit();
+				}
+				else {
+					winners.add("Optimus Prime");
+					battleCount++;
+				}
+			}
+			else if (name1 == "Predaking"){
+				if (name2 == name1 || name2 == "Optimus Prime"){
+					battleCount++;
+					rageQuit();
+				}
+				else {
+					winners.add("Predaking");
+					battleCount++;
+				}
+			}
+			
+			int str1 = roster[i-1].getStat(Transformer.strength);
+			int crg1 = roster[i-1].getStat(Transformer.courage);
+			int skl1 = roster[i-1].getStat(Transformer.skill);
+			int ovra1 = roster[i-1].getOverall();
+			
+			int str2 = roster[i].getStat(Transformer.strength);
+			int crg2 = roster[i].getStat(Transformer.courage);
+			int skl2 = roster[i].getStat(Transformer.skill);
+			int ovra2 = roster[i].getOverall();
+			
+			if ((str1 >= str2 - 3) && (crg1 >= crg2 - 4))
+				winners.add(roster[i-1].getName());
+			else if ((str1 <= str2 - 3) && (crg1 <= crg2 - 4))
+				winners.add(roster[i].getName());
+			else if (skl1 >= skl2)
+				winners.add(roster[i-1].getName());
+			else if (skl1 <= skl2)
+				winners.add(roster[i].getName());
+			else if (ovra1 > ovra2)
+				winners.add(roster[i-1].getName());
+			else if (ovra1 < ovra2)
+				winners.add(roster[i].getName());
+			// else if (ovra1 == ovra2) add nothing;
+			
+			battleCount++;
 		}
+				
+		for (int j = 0; j < (roster.length/2)*2; j++){
+			if (roster[j].getType() == 'A')
+				A++;
+			else
+				D++;
+		}
+		
+		if (A > D){
+			winningTeam = "Autobots";
+			losingTeam = "Decepticons";
+		}
+		else if (D > A){
+			winningTeam = "Decepticons";
+			losingTeam = "Autobots";
+		}
+		else {
+			System.out.println("It's a DRAW!");
+		}
+		
+		// Add the remaining loser to the survivors list
+		if (roster.length % 2 == 1){
+			if (roster[roster.length - 1].getType() == 'A' && winningTeam == "Decepticons" ||
+				roster[roster.length - 1].getType() == 'D' && winningTeam == "Autobots")
+				survivors.add(roster[roster.length - 1].getName());
+		}
+		
+		endGame();
+	}
+	
+	public void rageQuit(){
+		winningTeam = null;
+		losingTeam = null;
+		survivors.clear();
+		winners.clear();
+		
+		endGame();
 	}
 	
 	public void endGame(){
 		if (winningTeam == "Autobots")
 			losingTeam = "Decepticons";
-		else 
+		else if (winningTeam == "Decepticons")
 			losingTeam = "Autobots";
 		
 		System.out.println(this.battleCount + " battles");

@@ -3,6 +3,7 @@
 Exposition:
 - You are the Owner of a robot-battle stadium.
 - You regularly host battles as your career in the entertainment industry (more revenue than the superbowl too).
+- Entire Transformers league database: http://www.ntfa.net/ntfa/techspecs/index.php?cat=Gen1&group=AutoAN
 
 How it Starts:
 - There is a roster of transformers on 2 different teams stored in a list of objects.

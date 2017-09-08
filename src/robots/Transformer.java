@@ -2,7 +2,7 @@ package robots;
 
 import java.util.Comparator;
 
-public class Transformer implements Comparator<Transformer>{
+public class Transformer /*implements Comparator<Transformer>*/{
 	
 	public static int strength = 0,
 					intelligence = 1,
@@ -44,6 +44,18 @@ public class Transformer implements Comparator<Transformer>{
 	public String getTeam(){
 		return this.team;
 	}
+	public char getType(){
+		return this.type;
+	}
+	public int getOverall(){
+		return this.overall;
+	}
+	public int getRank(){
+		return this.stats[rank];
+	}
+	public int[] getStats(){
+		return this.stats;
+	}
 	public int getStat(int index){
 		// Due diligence, error checking out of bounds
 		if (index < 0 || index > 7) {
@@ -52,17 +64,27 @@ public class Transformer implements Comparator<Transformer>{
 		}
 		return this.stats[index];
 	}
-	
-	/* 
-	 * For transformer ranks
-	 **/
-	@Override
-	public int compare(Transformer t1, Transformer t2) {
-		if (t1.getStat(rank) > t2.getStat(rank))
-			return 1;
-		else if (t1.getStat(rank) < t2.getStat(rank))
-			return -1;
-		else
-			return 0;
+	public Transformer clone(){
+		return new Transformer(name, type, stats);
 	}
+	public void copy(Transformer toBeCopied){
+		this.name = toBeCopied.getName();
+		this.team = toBeCopied.getTeam();
+		this.type = toBeCopied.getType();
+		this.stats = toBeCopied.getStats();
+		this.overall = toBeCopied.getOverall();
+	}
+	
+//	/* 
+//	 * For transformer ranks
+//	 **/
+//	@Override
+//	public int compare(Transformer t1, Transformer t2) {
+//		if (t1.getStat(rank) > t2.getStat(rank))
+//			return 1;
+//		else if (t1.getStat(rank) < t2.getStat(rank))
+//			return -1;
+//		else
+//			return 0;
+//	}
 }

@@ -178,6 +178,9 @@ public class Game {
 			// else if (ovra1 == ovra2) add nothing;
 			
 			battleCount++;
+			roster[i].fought = true;
+			roster[j].fought = true;
+			
 			if (j-i == 1){
 				i+=2;
 				j+=2;
@@ -186,7 +189,6 @@ public class Game {
 				i++;
 				j++;
 			}
-				
 		}
 		
 //		for (int i=1; i < roster.length; i+=2){
@@ -282,7 +284,8 @@ public class Game {
 			if (roster[i].fought == false){
 				if (roster[i].getType() == 'A' && winningTeam == "Decepticons" ||
 					roster[i].getType() == 'D' && winningTeam == "Autobots")
-					survivors.add(roster[roster.length - 1].getName());
+					survivors.add(roster[i].getName());
+				break;
 			}
 			i++;
 		}
